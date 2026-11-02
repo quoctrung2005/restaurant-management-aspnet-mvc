@@ -1,0 +1,126 @@
+﻿@using DA_LTW.Models
+@{
+    QL_NHAHANGEntities db = new QL_NHAHANGEntities();
+    var loaiMonList = db.LOAIMONs.ToList();
+}
+
+<header class="border-bottom shadow-sm" style="background-color: #006600">
+    <div class="container py-3 d-flex align-items-center justify-content-between">
+
+        <div class="d-flex align-items-center">
+            <a href="/" class="d-flex align-items-center text-decoration-none">
+                <img src="@Url.Content("~/Content/Img/Logo.png")" alt="SmartRestaurant Logo"
+                     style="height:70px; width:70px; object-fit:contain; border-radius:50%; border:2px solid #fff; box-shadow:0 0 10px rgba(0,0,0,0.2);"
+                     class="me-2" />
+                <h3 class="m-0 fw-bold" style="color: #FFEFDB">SmartRestaurant</h3>
+            </a>
+        </div>
+
+        <nav>
+            <ul class="nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle fw-bold" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: #FFEFDB">
+                        Menu món ăn
+                    </a>
+
+                    <ul class="dropdown-menu">
+                        @foreach (var loai in loaiMonList)
+                        {
+                            <li>
+                                <a class="dropdown-item"
+                                   href="@Url.Action("LocTheoLoai", "MonAn", new { loaiId = loai.MaLoai })">
+                                    @loai.TenLoai
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </li>
+
+                <li class="nav-item position-relative">
+                    <a class="nav-link fw-bold" style="color: #FFEFDB" href="/GioHang">
+                        <i class="fas fa-shopping-cart"></i> Giỏ hàng
+                        <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 10px;">
+                            @{
+                                List<DA_LTW.Models.GioHang> gioHang = Session["GioHang"] as List<DA_LTW.Models.GioHang>;
+                                int soLuong = 0;
+                                if (gioHang != null)
+                                {
+                                    soLuong = gioHang.Sum(n => n.iSoLuong);
+                                }
+                            }
+                            @soLuong
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="d-flex align-items-center">
+
+            <form action="/MonAn/TimKiem" method="get" class="d-flex me-3">
+                <input type="text" name="search" class="form-control form-control-sm" placeholder="Tìm món...">
+                <button type="submit" class="btn btn-outline-light btn-sm ms-2">Tìm</button>
+            </form>
+
+
+            <div class="d-flex align-items-center">
+                <a href="javascript:void(0);" onclick="doGTranslate('vi|vi'); return false;"
+                   class="text-white me-2 fw-bold text-decoration-none" title="Tiếng Việt">VI</a>
+
+                <span class="text-white">|</span>
+
+                <a href="javascript:void(0);" onclick="doGTranslate('vi|en'); return false;"
+                   class="text-white ms-2 me-3 fw-bold text-decoration-none" title="English">EN</a>
+
+                <div id="google_translate_element" style="display:none;"></div>
+            </div>
+
+            @if (Session["UserRole"] == null)
+            {
+                <a href="@Url.Action("DangNhap", "TaiKhoan")" class="btn btn-outline-light btn-sm me-2">Đăng nhập</a>
+                <a href="@Url.Action("DangKy","TaiKhoan")" class="btn btn-light btn-sm">Đăng ký</a>
+            }
+            else
+            {
+                <span class="me-3">👋 Xin chào, <b>@Session["Username"]</b></span>
+                <a href="@Url.Action("logout","TaiKhoan")" class="btn btn-outline-danger btn-sm">Đăng xuất</a>
+            }
+        </div>
+    </div>
+</header>
+
+<div id="google_translate_element" class="ms-3"></div>
+
+<script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'vi',
+            autoDisplay: false
+        }, 'google_translate_element');
+    }
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+
+<script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'vi',
+            autoDisplay: false
+        }, 'google_translate_element');
+    }
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<script type="text/javascript">
+    function doGTranslate(langPair) {
+        var value = '/auto/' + langPair.split('|')[1];
+
+        // Gán cookie cho cả đường dẫn và domain để đảm bảo chạy được
+        document.cookie = 'googtrans=' + value + '; path=/';
+        document.cookie = 'googtrans=' + value + '; path=/; domain=' + window.location.hostname;
+
+        // Load lại trang
+        window.location.reload();
+    }
+</script>

@@ -1,0 +1,126 @@
+﻿@using PagedList.Mvc;
+@model PagedList.IPagedList<DA_LTW.Models.MONAN>
+@{
+    ViewBag.Title = "DanhSachKhach";
+    Layout = "~/Views/Shared/_LayoutTrangChu.cshtml";
+}
+
+<head>
+    <link rel="stylesheet" href="~/Content/css/css_form.css" />
+</head>
+
+<div class="row justify-content-center">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4 mb-5">
+            <div class="card shadow-sm position-relative card-custom">
+
+                <img src="@item.HinhAnh" class="card-img-top"
+                     style="height: 220px; object-fit: cover; border-radius: 12px 12px 0 0;" />
+
+                <div class="card-body text-center" style="padding-bottom: 70px;">
+                    <h5 class="card-title text-truncate">@item.TenMon</h5>
+                    <p class="text-danger fw-bold fs-5">@string.Format("{0:N0} VNĐ", item.Gia)</p>
+
+                    <a href="javascript:void(0);"
+                       class="btn btn-add-cart ajax-add-to-cart"
+                       data-id="@item.MaMon">
+                        <i class="fas fa-cart-plus me-1"></i> Thêm vào giỏ hàng
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-12">
+        <div class="text-center mb-2">
+            Trang @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) / @Model.PageCount
+        </div>
+
+        @if (Model.PageCount > 1)
+        {
+            <nav>
+                <ul class="pagination justify-content-center">
+                    @if (Model.HasPreviousPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("DanhSachKhach", new { page = Model.PageNumber - 1 })">&laquo;</a>
+                        </li>
+                    }
+
+                    @for (int i = 1; i <= Model.PageCount; i++)
+                    {
+                        <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("DanhSachKhach", new { page = i })">@i</a>
+                        </li>
+                    }
+
+                    @if (Model.HasNextPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("DanhSachKhach", new { page = Model.PageNumber + 1 })">&raquo;</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        }
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // 1. Hàm xử lý thêm vào giỏ
+    function ThemVaoGioHang(idMonAn, btn) {
+        var originalText = btn.html();
+
+        // Hiệu ứng Loading & Khóa nút
+        btn.html('<i class="fas fa-spinner fa-spin"></i> Đang xử lý...');
+        btn.prop('disabled', true);
+
+        $.ajax({
+            url: '/GioHang/ThemVaoGioAjax',
+            type: 'POST',
+            data: { id: idMonAn },
+            success: function (response) {
+                if (response.success) {
+                    // Cập nhật số lượng trên Header
+                    $('#cart-count').text(response.count);
+
+                    // Hiệu ứng thành công
+                    btn.html('<i class="fas fa-check"></i> Đã thêm');
+                    btn.css({ "background-color": "#198754", "border-color": "#198754", "color": "white" }); // Màu xanh lá
+
+                    // Trả lại trạng thái cũ sau 1.5 giây
+                    setTimeout(function () {
+                        btn.html(originalText);
+                        btn.prop('disabled', false);
+                        btn.css({ "background-color": "transparent", "border-color": "#6c757d", "color": "#6c757d" }); // Về màu xám cũ
+                    }, 1500);
+                } else {
+                    alert("Lỗi server: " + response.message);
+                    btn.html(originalText);
+                    btn.prop('disabled', false);
+                }
+            },
+            error: function (err) {
+                console.log(err);
+                alert("Lỗi kết nối server!");
+                btn.html(originalText);
+                btn.prop('disabled', false);
+            }
+        });
+    }
+
+    // 2. Gọi hàm khi click
+    $(document).ready(function () {
+        $('.ajax-add-to-cart').click(function (e) {
+            e.preventDefault();
+            var id = $(this).data('id');
+            var button = $(this);
+            ThemVaoGioHang(id, button);
+        });
+    });
+</script>   

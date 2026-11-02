@@ -1,0 +1,34 @@
+﻿@model DA_LTW.Models.NHANVIEN
+
+@{
+    ViewBag.Title = "Xóa nhân viên";
+    Layout = "~/Views/Shared/_LayoutDoAn.cshtml";
+}
+
+<h2>Xóa nhân viên</h2>
+
+<h4>Bạn có chắc muốn xóa nhân viên này?</h4>
+
+<div>
+    <dl class="dl-horizontal">
+        <dt>Mã NV</dt>
+        <dd>@Model.MaNV</dd>
+
+        <dt>Họ tên</dt>
+        <dd>@Model.HoTen</dd>
+
+        <dt>Vai trò</dt>
+        <dd>@Model.VaiTro</dd>
+
+        <dt>Lương</dt>
+        <dd>@String.Format("{0:N0} đ", Model.Luong)</dd>
+    </dl>
+</div>
+
+@using (Html.BeginForm("Delete", "NhanVien", new { id = Model.MaNV }))
+{
+    @Html.AntiForgeryToken()
+
+    <input type="submit" value="Xóa" class="btn btn-danger" />
+    @Html.ActionLink("Hủy", "Index", null, new { @class = "btn btn-secondary" })
+}

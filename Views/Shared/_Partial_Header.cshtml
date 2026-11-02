@@ -1,0 +1,75 @@
+﻿
+
+
+<header class="bg-light border-bottom">
+    <div class="container py-3 d-flex align-items-center justify-content-between">
+        <!-- Logo -->
+        <div class="d-flex align-items-center">
+            <img src="~/Content/Img/Logo.png" alt="SmartRestaurant Logo"
+                 style="height:80px; width:80px; object-fit:contain; border-radius:70%; border:2px solid #fff; box-shadow:0 0 10px rgba(0,0,0,0.2);"
+                 class="me-2" />
+            <h3 class="m-0 text-dark fw-bold">SmartRestaurant</h3>
+        </div>
+        <!-- Thanh ngôn ngữ và đăng nhập -->
+        <div class="d-flex align-items-center">
+            <!-- Đổi ngôn ngữ -->
+            <div class="d-flex align-items-center">
+                <a href="javascript:void(0);" onclick="doGTranslate('vi|vi'); return false;"
+                   class="text-white me-2 fw-bold text-decoration-none" title="Tiếng Việt">VI</a>
+
+                <span class="text-white">|</span>
+
+                <a href="javascript:void(0);" onclick="doGTranslate('vi|en'); return false;"
+                   class="text-white ms-2 me-3 fw-bold text-decoration-none" title="English">EN</a>
+
+                <div id="google_translate_element" style="display:none;"></div>
+            </div>
+
+            <!-- Đăng nhập / Đăng ký -->
+            @if (Session["UserRole"] == null)
+            {
+                <a href="/TaiKhoan/DangNhap" class="btn btn-outline-primary btn-sm me-2">Đăng nhập</a>
+                <a href="/TaiKhoan/DangKy" class="btn btn-primary btn-sm">Đăng ký</a>
+            }
+            else
+            {
+                <span class="me-3">👋 Xin chào, <b>@Session["Username"]</b></span>
+                <a href="/TaiKhoan/DangXuat" class="btn btn-outline-danger btn-sm">Đăng xuất</a>
+            }
+        </div>
+    </div>
+</header>
+
+<script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'vi',
+            autoDisplay: false
+        }, 'google_translate_element');
+    }
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+
+<script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'vi',
+            autoDisplay: false
+        }, 'google_translate_element');
+    }
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<script type="text/javascript">
+    function doGTranslate(langPair) {
+        var value = '/auto/' + langPair.split('|')[1];
+
+        // Gán cookie cho cả đường dẫn và domain để đảm bảo chạy được
+        document.cookie = 'googtrans=' + value + '; path=/';
+        document.cookie = 'googtrans=' + value + '; path=/; domain=' + window.location.hostname;
+
+        // Load lại trang
+        window.location.reload();
+    }
+</script>
